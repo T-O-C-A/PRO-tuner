@@ -1,0 +1,13 @@
+{
+  "name": "Violin - Sweet",
+  "instrument": "Violin",
+  "tuning": "Standard (G3 D4 A4 E5)",
+  "sweetened": true,
+  "A4": 440.0,
+  "offsets": {
+    "G3": -0.3,
+    "D4": 0.0,
+    "A4": 0.3,
+    "E5": 0.8
+  }
+}

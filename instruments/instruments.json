@@ -1,0 +1,173 @@
+{
+  "Guitar": {
+    "type": "string",
+    "transpose": "C",
+    "algo": "yin",
+    "buffer": 256,
+    "hop": 128,
+    "silence": -25,
+    "tunings": {
+      "Standard (E2 A2 D3 G3 B3 E4)": [
+        "E2",
+        "A2",
+        "D3",
+        "G3",
+        "B3",
+        "E4"
+      ],
+      "Drop D (D2 A2 D3 G3 B3 E4)": [
+        "D2",
+        "A2",
+        "D3",
+        "G3",
+        "B3",
+        "E4"
+      ],
+      "Open G (D2 G2 D3 G3 B3 D4)": [
+        "D2",
+        "G2",
+        "D3",
+        "G3",
+        "B3",
+        "D4"
+      ],
+      "DADGAD (D2 A2 D3 G3 A3 D4)": [
+        "D2",
+        "A2",
+        "D3",
+        "G3",
+        "A3",
+        "D4"
+      ]
+    },
+    "sweetened": {
+      "E": 1.2,
+      "A": 0.6,
+      "D": 0.0,
+      "G": -0.4,
+      "B": 1.6
+    }
+  },
+  "Bass 4-string": {
+    "type": "string",
+    "transpose": "C",
+    "algo": "yinfft",
+    "buffer": 512,
+    "hop": 256,
+    "silence": -30,
+    "tunings": {
+      "Standard (E1 A1 D2 G2)": [
+        "E1",
+        "A1",
+        "D2",
+        "G2"
+      ]
+    },
+    "sweetened": {
+      "E": 0.8,
+      "A": 0.5,
+      "D": 0.2,
+      "G": 0.0
+    }
+  },
+  "Ukulele": {
+    "type": "string",
+    "transpose": "C",
+    "algo": "yin",
+    "buffer": 256,
+    "hop": 128,
+    "silence": -25,
+    "tunings": {
+      "Soprano (G4 C4 E4 A4)": [
+        "G4",
+        "C4",
+        "E4",
+        "A4"
+      ],
+      "Concert (G4 C4 E4 A4)": [
+        "G4",
+        "C4",
+        "E4",
+        "A4"
+      ],
+      "Tenor Low G (G3 C4 E4 A4)": [
+        "G3",
+        "C4",
+        "E4",
+        "A4"
+      ],
+      "Baritone (D3 G3 B3 E4)": [
+        "D3",
+        "G3",
+        "B3",
+        "E4"
+      ]
+    },
+    "sweetened": {
+      "C": 0.0,
+      "E": 0.6,
+      "G": -0.3,
+      "A": 0.8,
+      "D": 0.2,
+      "B": 1.0
+    }
+  },
+  "Violin": {
+    "type": "string",
+    "transpose": "C",
+    "algo": "yinfft",
+    "buffer": 512,
+    "hop": 256,
+    "silence": -35,
+    "tunings": {
+      "Standard (G3 D4 A4 E5)": [
+        "G3",
+        "D4",
+        "A4",
+        "E5"
+      ]
+    },
+    "sweetened": {
+      "G": -0.3,
+      "D": 0.0,
+      "A": 0.3,
+      "E": 0.8
+    }
+  },
+  "Trumpet (Bb)": {
+    "type": "brass",
+    "transpose": "Bb",
+    "algo": "yinfft",
+    "buffer": 1024,
+    "hop": 512,
+    "silence": -40,
+    "tunings": {
+      "Range (E3\u2013C6)": [
+        "E3",
+        "C6"
+      ]
+    },
+    "sweetened": {
+      "low": 5,
+      "mid": 0,
+      "high": -5
+    }
+  },
+  "Piano": {
+    "type": "keyboard",
+    "transpose": "C",
+    "algo": "yinfft",
+    "buffer": 1024,
+    "hop": 512,
+    "silence": -40,
+    "tunings": {
+      "Concert (A0\u2013C8)": [
+        "A0",
+        "C8"
+      ]
+    },
+    "sweetened": {
+      "stretch": "Medium"
+    }
+  }
+}

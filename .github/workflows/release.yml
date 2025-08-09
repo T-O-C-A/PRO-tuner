@@ -1,0 +1,42 @@
+name: Build & Release
+on:
+  push: { tags: ['v*.*.*'] }
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy: { matrix: { os: [windows-latest, macos-latest, ubuntu-latest] } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+      - name: Build
+        run: |
+          pyinstaller --onefile --noconsole src/main.py -n ProTuner
+      - name: Package
+        shell: bash
+        run: |
+          mkdir -p dist_pkg/assets/branding dist_pkg/assets/screenshots dist_pkg/instruments dist_pkg/presets
+          cp -r dist/ProTuner* dist_pkg/
+          cp -r assets/branding/* dist_pkg/assets/branding/ || true
+          cp -r assets/screenshots/* dist_pkg/assets/screenshots/ || true
+          cp -r instruments/* dist_pkg/instruments/ || true
+          cp -r presets/* dist_pkg/presets/ || true
+          cp version.json CHANGELOG.md README.md LICENSE dist_pkg/
+          if [[ "$RUNNER_OS" == "Windows" ]]; then zip -r PRO-tuner-${{ github.ref_name }}-windows.zip dist_pkg; fi
+          if [[ "$RUNNER_OS" == "macOS" ]]; then  zip -r PRO-tuner-${{ github.ref_name }}-macos.zip dist_pkg; fi
+          if [[ "$RUNNER_OS" == "Linux" ]]; then   zip -r PRO-tuner-${{ github.ref_name }}-linux.zip dist_pkg; fi
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            *.zip
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

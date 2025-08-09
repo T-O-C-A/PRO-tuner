@@ -1,0 +1,13 @@
+{
+  "name": "Ukulele - Concert (Sweet)",
+  "instrument": "Ukulele",
+  "tuning": "Concert (G4 C4 E4 A4)",
+  "sweetened": true,
+  "A4": 440.0,
+  "offsets": {
+    "G4": -0.3,
+    "C4": 0.0,
+    "E4": 0.6,
+    "A4": 0.8
+  }
+}

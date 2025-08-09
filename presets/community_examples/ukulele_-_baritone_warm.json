@@ -1,0 +1,13 @@
+{
+  "name": "Ukulele - Baritone Warm",
+  "instrument": "Ukulele",
+  "tuning": "Baritone (D3 G3 B3 E4)",
+  "sweetened": true,
+  "A4": 440.0,
+  "offsets": {
+    "D3": 0.2,
+    "G3": -0.2,
+    "B3": 1.0,
+    "E4": 0.8
+  }
+}

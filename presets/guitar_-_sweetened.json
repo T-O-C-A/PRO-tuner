@@ -1,0 +1,15 @@
+{
+  "name": "Guitar - Sweetened",
+  "instrument": "Guitar",
+  "tuning": "Standard (E2 A2 D3 G3 B3 E4)",
+  "sweetened": true,
+  "A4": 440.0,
+  "offsets": {
+    "E2": 1.5,
+    "A2": 0.8,
+    "D3": 0.0,
+    "G3": -0.4,
+    "B3": 1.6,
+    "E4": 1.8
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Guitar - Standard",
+  "instrument": "Guitar",
+  "tuning": "Standard (E2 A2 D3 G3 B3 E4)",
+  "sweetened": false,
+  "A4": 440.0
+}
