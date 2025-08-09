@@ -1,0 +1,95 @@
+{
+  "Chapman Stick": {
+    "type": "string",
+    "transpose": "C",
+    "algo": "yinfft",
+    "buffer": 512,
+    "hop": 256,
+    "silence": -30,
+    "tunings": {
+      "Classic 10 (B1 E2 A2 D3 G3 | C3 F3 Bb3 Eb4 Ab4)": [
+        "B1",
+        "E2",
+        "A2",
+        "D3",
+        "G3",
+        "C3",
+        "F3",
+        "Bb3",
+        "Eb4",
+        "Ab4"
+      ]
+    },
+    "sweetened": {
+      "bass_default": 0.6,
+      "melody_default": 0.8
+    }
+  },
+  "Oud": {
+    "type": "string",
+    "transpose": "C",
+    "algo": "yinfft",
+    "buffer": 512,
+    "hop": 256,
+    "silence": -30,
+    "tunings": {
+      "Arabic (C2 F2 A2 D3 G3 C4)": [
+        "C2",
+        "F2",
+        "A2",
+        "D3",
+        "G3",
+        "C4"
+      ],
+      "Turkish (D2 G2 A2 D3 G3 C4)": [
+        "D2",
+        "G2",
+        "A2",
+        "D3",
+        "G3",
+        "C4"
+      ]
+    },
+    "sweetened": {
+      "default": 0.0
+    }
+  },
+  "Duduk": {
+    "type": "woodwind",
+    "transpose": "A",
+    "algo": "yinfft",
+    "buffer": 1024,
+    "hop": 512,
+    "silence": -40,
+    "tunings": {
+      "Range (A3\u2013D6)": [
+        "A3",
+        "D6"
+      ]
+    },
+    "sweetened": {
+      "low": 6,
+      "mid": 0,
+      "high": -8
+    }
+  },
+  "Pan Flute": {
+    "type": "woodwind",
+    "transpose": "C",
+    "algo": "yinfft",
+    "buffer": 1024,
+    "hop": 512,
+    "silence": -40,
+    "tunings": {
+      "Range (G3\u2013E6)": [
+        "G3",
+        "E6"
+      ]
+    },
+    "sweetened": {
+      "low": 3,
+      "mid": 0,
+      "high": -5
+    }
+  }
+}
