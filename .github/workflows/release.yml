@@ -3,8 +3,8 @@ name: Build & Release
 on:
   push:
     branches: [ main ]
-    tags:     [ 'v*.*.*' ]   # bij tags ook echte release bouwen
-  workflow_dispatch: {}       # handmatig starten via UI
+    tags:     [ 'v*.*.*' ]       # bij tags: echte release
+  workflow_dispatch: {}           # handmatig starten kan
 
 jobs:
   build:
@@ -31,25 +31,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # Linux: optionele systeemlib's voor audio
+      # (Linux) paar system libs voor audio
       - name: Linux system deps
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y libsndfile1-dev libsamplerate0-dev
 
-      # macOS & Linux: bash install
+      # macOS & Linux: bash
       - name: Install deps (numpy first) • macOS/Linux
         if: runner.os != 'Windows'
         shell: bash
         run: |
           set -e
           python -m pip install --upgrade pip
-          pip install "numpy<2.0"      # aubio 0.4.9 breekt met NumPy 2.x
+          pip install "numpy<2.0"          # aubio 0.4.9 breekt met NumPy 2.x
           pip install -r requirements.txt
           pip install pyinstaller
 
-      # Windows: PowerShell install
+      # Windows: PowerShell
       - name: Install deps (numpy first) • Windows
         if: runner.os == 'Windows'
         shell: powershell
@@ -59,18 +59,18 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      # Bepaal automatisch het entrypoint (werkt op alle runners)
+      # Vind automatisch het entrypoint (src/main.py, main.py, app/main.py, pro_tuner/main.py)
       - name: Determine entrypoint
         shell: bash
         run: |
           set -e
-          if   [ -f src/main.py ];            then EP=src/main.py;
-          elif [ -f main.py ];                then EP=main.py;
-          elif [ -f app/main.py ];            then EP=app/main.py;
-          elif [ -f pro_tuner/main.py ];      then EP=pro_tuner/main.py;
+          if   [ -f src/main.py ]; then EP=src/main.py;
+          elif [ -f main.py ]; then EP=main.py;
+          elif [ -f app/main.py ]; then EP=app/main.py;
+          elif [ -f pro_tuner/main.py ]; then EP=pro_tuner/main.py;
           else
             echo "❌ Geen entrypoint gevonden. Inhoud repo:"
-            ls -la
+            ls -la; echo "src/:"; ls -la src || true; echo "app/:"; ls -la app || true
             exit 1
           fi
           echo "ENTRYPOINT=$EP" >> "$GITHUB_ENV"
@@ -80,17 +80,34 @@ jobs:
       - name: Build with PyInstaller • Windows
         if: runner.os == 'Windows'
         shell: powershell
-        run: |
-          pyinstaller --onefile --noconsole "$env:ENTRYPOINT" -n ProTuner
+        run: pyinstaller --onefile --noconsole "$env:ENTRYPOINT" -n ProTuner
 
       - name: Build with PyInstaller • macOS/Linux
         if: runner.os != 'Windows'
         shell: bash
-        run: |
-          pyinstaller --onefile --noconsole "$ENTRYPOINT" -n ProTuner
+        run: pyinstaller --onefile --noconsole "$ENTRYPOINT" -n ProTuner
 
-      # Package in een nette zip per OS
-      - name: Package artifact
+      # Package: Windows gebruikt Compress-Archive (geen 'zip' cmd), macOS/Linux gebruiken zip
+      - name: Package artifact • Windows
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path dist_pkg\assets\branding | Out-Null
+          New-Item -ItemType Directory -Force -Path dist_pkg\assets\screenshots | Out-Null
+          New-Item -ItemType Directory -Force -Path dist_pkg\instruments | Out-Null
+          New-Item -ItemType Directory -Force -Path dist_pkg\presets | Out-Null
+          Copy-Item -Recurse dist\ProTuner* dist_pkg\ -ErrorAction SilentlyContinue
+          Copy-Item -Recurse assets\branding\*     dist_pkg\assets\branding\     -ErrorAction SilentlyContinue
+          Copy-Item -Recurse assets\screenshots\*  dist_pkg\assets\screenshots\  -ErrorAction SilentlyContinue
+          Copy-Item -Recurse instruments\*         dist_pkg\instruments\         -ErrorAction SilentlyContinue
+          Copy-Item -Recurse presets\*             dist_pkg\presets\             -ErrorAction SilentlyContinue
+          Copy-Item version.json,CHANGELOG.md,README.md,LICENSE dist_pkg\ -ErrorAction SilentlyContinue
+          if (Test-Path dist_pkg\*) {
+            Compress-Archive -Path dist_pkg\* -DestinationPath "PRO-tuner-${{ github.ref_name }}-windows.zip" -Force
+          } else { Write-Error "dist_pkg is leeg"; exit 1 }
+
+      - name: Package artifact • macOS/Linux
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           set -e
@@ -101,9 +118,8 @@ jobs:
           cp -r instruments/*          dist_pkg/instruments/        2>/dev/null || true
           cp -r presets/*              dist_pkg/presets/            2>/dev/null || true
           cp version.json CHANGELOG.md README.md LICENSE dist_pkg/  2>/dev/null || true
-          if [[ "$RUNNER_OS" == "Windows" ]]; then zip -r "PRO-tuner-${{ github.ref_name }}-windows.zip" dist_pkg; fi
-          if [[ "$RUNNER_OS" == "macOS"   ]]; then zip -r "PRO-tuner-${{ github.ref_name }}-macos.zip"   dist_pkg; fi
-          if [[ "$RUNNER_OS" == "Linux"   ]]; then zip -r "PRO-tuner-${{ github.ref_name }}-linux.zip"   dist_pkg; fi
+          if [[ "$RUNNER_OS" == "macOS" ]]; then  zip -r "PRO-tuner-${{ github.ref_name }}-macos.zip"   dist_pkg; fi
+          if [[ "$RUNNER_OS" == "Linux" ]]; then   zip -r "PRO-tuner-${{ github.ref_name }}-linux.zip"   dist_pkg; fi
 
       # Artefacts bij gewone runs (geen tag)
       - name: Upload artifacts (CI runs)
@@ -111,14 +127,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PRO-tuner-${{ matrix.os }}
-          path: "*.zip"
+          path: |
+            PRO-tuner-*-windows.zip
+            PRO-tuner-*-macos.zip
+            PRO-tuner-*-linux.zip
 
-      # Echte release bij tags
+      # Release assets bij tags
       - name: Release (tags only)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: "*.zip"
+          files: |
+            PRO-tuner-*-windows.zip
+            PRO-tuner-*-macos.zip
+            PRO-tuner-*-linux.zip
           body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
